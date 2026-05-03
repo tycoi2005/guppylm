@@ -332,9 +332,17 @@ def build():
         "        'pad_token_id': cfg['pad_id'],\n"
         "        'bos_token_id': cfg['bos_id'],\n"
         "        'eos_token_id': cfg['eos_id'],\n"
+        "        'use_moe': cfg.get('use_moe', False),\n"
+        "        'n_experts': cfg.get('n_experts', 4),\n"
+        "        'moe_slots': cfg.get('moe_slots', 1),\n"
+        "        'use_recurrent': cfg.get('use_recurrent', False),\n"
+        "        'use_ouroloop': cfg.get('use_ouroloop', False),\n"
+        "        'n_loops': cfg.get('n_loops', 3),\n"
         "    }, f, indent=2)\n"
         "\n"
         "shutil.copy('data/tokenizer.json', 'hf_export/tokenizer.json')\n"
+        "for src in ('config.py', 'model.py', 'inference.py'):\n"
+        "    shutil.copy(src, f'hf_export/{src}')\n"
         "print(f'pytorch_model.bin: {os.path.getsize(\"hf_export/pytorch_model.bin\")/1e6:.1f} MB')\n"
         "\n"
         "# ── ONNX format (quantized uint8) ──\n"
@@ -439,6 +447,16 @@ def build_use():
         "snapshot_download(repo_id='arman-bd/guppylm-9M', local_dir='.')\n"
         "print('Model downloaded.')"
     ))
+
+    # Write source files that may not be in the HF repo or may be outdated
+    for display_name, src_path in [
+        ("config.py",    "guppylm/config.py"),
+        ("model.py",     "guppylm/model.py"),
+        ("inference.py", "guppylm/inference.py"),
+    ]:
+        full_path = os.path.join(PROJECT_ROOT, src_path)
+        content = read_for_colab(full_path)
+        cells.append(code(f"%%writefile {display_name}\n{content}"))
 
     cells.append(code(
         "# Load model\n"
