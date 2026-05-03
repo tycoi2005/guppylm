@@ -78,6 +78,18 @@ It's trained from scratch on 60K synthetic conversations across 60 topics, runs 
 
 Vanilla transformer. No GQA, no RoPE, no SwiGLU, no early exit. As simple as it gets.
 
+### Optional architecture extensions
+
+Three opt-in extensions can be enabled via `GuppyConfig` flags:
+
+| Flag | Default | Description |
+|---|---|---|
+| `use_moe` | `False` | Replace each FFN with a **Soft Mixture-of-Experts** layer (Puigcerver et al., 2023). `n_experts` controls the number of expert FFNs; `moe_slots` controls soft-dispatch slots per expert. |
+| `use_recurrent` | `False` | Add a **minimal GRU sublayer** that mixes information across the sequence dimension inside each transformer block. |
+| `use_ouroloop` | `False` | **Ouroboros loop** — re-apply the full block stack `n_loops` times with shared weights, giving extra depth at no parameter cost. |
+
+All extensions are off by default and are transparent to inference: model checkpoints and exported `config.json` files always include the flags so the right architecture is reconstructed on load.
+
 ---
 
 ## Personality
