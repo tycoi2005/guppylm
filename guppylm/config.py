@@ -13,6 +13,18 @@ class GuppyConfig:
     ffn_hidden: int = 768
     dropout: float = 0.1
 
+    # Soft Mixture of Experts (Puigcerver et al., 2023)
+    use_moe: bool = False
+    n_experts: int = 4          # number of expert FFNs
+    moe_slots: int = 1          # soft-dispatch slots per expert
+
+    # Recurrent sublayer (minimal GRU over the sequence dimension)
+    use_recurrent: bool = False
+
+    # Ouroboros loop — re-apply the full block stack n_loops times (weight-shared)
+    use_ouroloop: bool = False
+    n_loops: int = 3            # number of ouroboros iterations
+
     # Special tokens
     pad_id: int = 0
     bos_id: int = 1           # <|im_start|>

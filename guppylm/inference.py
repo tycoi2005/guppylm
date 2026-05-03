@@ -45,6 +45,12 @@ class GuppyInference:
                 pad_id=cfg.get("pad_token_id", cfg.get("pad_id", 0)),
                 bos_id=cfg.get("bos_token_id", cfg.get("bos_id", 1)),
                 eos_id=cfg.get("eos_token_id", cfg.get("eos_id", 2)),
+                use_moe=cfg.get("use_moe", False),
+                n_experts=cfg.get("n_experts", 4),
+                moe_slots=cfg.get("moe_slots", 1),
+                use_recurrent=cfg.get("use_recurrent", False),
+                use_ouroloop=cfg.get("use_ouroloop", False),
+                n_loops=cfg.get("n_loops", 3),
             )
         elif isinstance(ckpt, dict) and "config" in ckpt:
             valid_fields = {f.name for f in GuppyConfig.__dataclass_fields__.values()}
