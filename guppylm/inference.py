@@ -33,6 +33,9 @@ class GuppyInference:
         if os.path.exists(config_path):
             with open(config_path) as f:
                 cfg = json.load(f)
+            # Unwrap nested training format {"model": {...}, "train": {...}}
+            if "model" in cfg and isinstance(cfg["model"], dict) and "vocab_size" not in cfg:
+                cfg = cfg["model"]
             # Support both HF standard keys and our own keys
             self.config = GuppyConfig(
                 vocab_size=cfg.get("vocab_size", 4096),
